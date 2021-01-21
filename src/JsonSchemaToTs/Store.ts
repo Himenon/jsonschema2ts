@@ -92,8 +92,6 @@ export const create = (rootJsonSchema: Types.JSONSchema): Type => {
       return statements;
     }, []);
 
-    fs.writeFileSync("debug/sample.json", JSON.stringify(operator.getHierarchy(), null, 2), { encoding: "utf-8" });
-
     return statements.concat(state.additionalStatements);
   };
 

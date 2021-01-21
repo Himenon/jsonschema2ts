@@ -1,4 +1,4 @@
-import * as Types from "./types";
+import * as Types from "../types";
 
 export const isReference = (data: any): data is Types.Reference => {
   if (typeof data !== "object" || data === null) {

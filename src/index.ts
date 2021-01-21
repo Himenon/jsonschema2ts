@@ -6,7 +6,7 @@ export { Types, JsonSchemaToTs };
 
 export const generateFromJsonSchema = (jsonSchema: Types.JSONSchema): string => {
   const createFunction: TsGenerator.CreateFunction = () => {
-    return JsonSchemaToTs.generate("", "", jsonSchema);
+    return JsonSchemaToTs.generate(process.cwd(), process.cwd(), jsonSchema);
   };
   return TsGenerator.generate(createFunction);
 };

@@ -4,6 +4,10 @@
     "StringType": {
       "type": "string"
     },
+    "StringHasEnumType": {
+      "type": "string",
+      "enum": ["a", "A", "b", "B", "あ", "ア", "い", "イ", "漢", "字"]
+    },
     "NumberType": {
       "type": "number"
     },
@@ -28,6 +32,51 @@
           "type": "boolean"
         }
       ]
+    },
+    "AllOfType": {
+      "allOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "ObjectType": {
+      "type": "object",
+      "required": ["stringType", "booleanType"],
+      "properties": {
+        "stringType": {
+          "type": "string"
+        },
+        "numberType": {
+          "type": "number"
+        },
+        "booleanType": {
+          "type": "boolean"
+        },
+        "arrayType": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "RefToDefinitionString": {
+      "$ref": "#/definitions/LocalReferenceString"
+    },
+    "RefToPropertyString": {
+      "$ref": "#/properties/StringType"
+    }
+  },
+  "definitions": {
+    "LocalReferenceString": {
+      "type": "string"
     }
   }
 }

@@ -1,7 +1,7 @@
 import ts from "typescript";
 
-import * as Reference from "../Reference";
-import * as Guard from "../Guard";
+import * as Reference from "./Reference";
+import * as Guard from "./Guard";
 import type * as Types from "../types";
 import { ObjectSchemaWithAdditionalProperties } from "../types";
 import * as Factory from "../Factory";

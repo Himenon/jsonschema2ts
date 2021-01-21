@@ -1,7 +1,7 @@
 import ts from "typescript";
 
 import * as Factory from "../Factory";
-import * as Guard from "../Guard";
+import * as Guard from "./Guard";
 import * as ToTypeNode from "./TypeNode";
 import * as Types from "../types";
 import { ArraySchema, ObjectSchema, PrimitiveSchema } from "../types";

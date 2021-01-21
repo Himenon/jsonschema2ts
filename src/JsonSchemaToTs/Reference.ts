@@ -1,8 +1,8 @@
 import * as path from "path";
 
-import { fileSystem } from "./FileSystem";
+import { fileSystem } from "../FileSystem";
 import * as Guard from "./Guard";
-import type * as Types from "./types";
+import type * as Types from "../types";
 
 export interface LocalReference {
   type: "local";

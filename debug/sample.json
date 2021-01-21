@@ -1,8 +1,14 @@
 {
   "name": ".",
   "children": {
+    "typeAlias:LocalReferenceString": {
+      "name": "LocalReferenceString"
+    },
     "typeAlias:StringType": {
       "name": "StringType"
+    },
+    "typeAlias:StringHasEnumType": {
+      "name": "StringHasEnumType"
     },
     "typeAlias:NumberType": {
       "name": "NumberType"
@@ -15,6 +21,15 @@
     },
     "typeAlias:OneOfType": {
       "name": "OneOfType"
+    },
+    "typeAlias:AllOfType": {
+      "name": "AllOfType"
+    },
+    "interface:ObjectType": {
+      "name": "ObjectType"
+    },
+    "typeAlias:RefString": {
+      "name": "RefString"
     }
   }
 }

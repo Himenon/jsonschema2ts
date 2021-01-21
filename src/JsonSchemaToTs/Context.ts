@@ -63,9 +63,6 @@ const calculateReferencePath = (store: Store.Type, base: string, pathArray: stri
     }
     return current;
   }, base);
-  if (names.length === 0) {
-    throw new Error("Local Reference Error \n" + JSON.stringify({ pathArray, names, base }, null, 2));
-  }
   return {
     name: names.join("."),
     maybeResolvedName: names.concat(unresolvedPaths).join("."),

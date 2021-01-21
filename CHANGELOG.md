@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.1.0"></a>
+# 0.1.0 (2021-01-21)
+
+
+### Features
+
+* create jsonschema2ts ([#1](https://github.com/Himenon/jsonschema2ts/issues/1)) ([d7b0ae5](https://github.com/Himenon/jsonschema2ts/commit/d7b0ae5))
+
+
+
+
+
 <a name="0.0.10"></a>
 ## 0.0.10 (2021-01-19)
 

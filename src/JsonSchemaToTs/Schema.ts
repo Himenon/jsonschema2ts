@@ -23,7 +23,7 @@ export const generatePropertySignatures = (
     return factory.PropertySignature.create({
       name: propertyName,
       optional: !required.includes(propertyName),
-      type: ToTypeNode.convert(entryPoint, currentPoint, property, context),
+      type: ToTypeNode.convert(entryPoint, currentPoint, property, context, context.isOnlyLocalReference),
       comment: typeof property !== "boolean" ? property.description : undefined,
     });
   });
@@ -42,7 +42,13 @@ export const generateInterface = (
   let members: ts.TypeElement[] = [];
   const propertySignatures = generatePropertySignatures(entryPoint, currentPoint, schema, context);
   if (Guard.isObjectSchemaWithAdditionalProperties(schema)) {
-    const additionalProperties = ToTypeNode.convertAdditionalProperties(entryPoint, currentPoint, schema, context);
+    const additionalProperties = ToTypeNode.convertAdditionalProperties(
+      entryPoint,
+      currentPoint,
+      schema,
+      context,
+      context.isOnlyLocalReference,
+    );
     if (schema.additionalProperties === true) {
       members = members.concat(additionalProperties);
     } else {
@@ -70,7 +76,7 @@ export const generateArrayTypeAlias = (
     export: true,
     name,
     comment: schema.description,
-    type: ToTypeNode.convert(entryPoint, currentPoint, schema, context),
+    type: ToTypeNode.convert(entryPoint, currentPoint, schema, context, context.isOnlyLocalReference),
   });
 };
 

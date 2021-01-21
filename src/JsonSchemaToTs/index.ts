@@ -22,7 +22,7 @@ const appendSchema = (
 ): void => {
   const targetPoint = name;
   if (Guard.isReference(schema)) {
-    const reference = Reference.generate<Types.JSONSchema>(entryPoint, currentPoint, schema);
+    const reference = Reference.generate<Types.JSONSchema>(entryPoint, currentPoint, schema, context.isOnlyLocalReference);
     if (reference.type === "local") {
       const { unresolvedPaths } = context.resolveReferencePath(currentPoint, reference.path);
       const resolveName = (TARGET_SCHEMAS.includes(unresolvedPaths[0])
@@ -41,16 +41,21 @@ const appendSchema = (
         }),
       });
     } else {
-      throw new Error("Feature support");
+      reference.data.$ref;
     }
   } else {
     Schema.addSchema(entryPoint, currentPoint, store, targetPoint, name, schema, context);
   }
 };
 
-export const generate = (entryPoint: string, currentPoint: string, jsonSchema: Types.JSONSchema): ts.Statement[] => {
+export const generate = (
+  entryPoint: string,
+  currentPoint: string,
+  jsonSchema: Types.JSONSchema,
+  isOnlyLocalReference: boolean,
+): ts.Statement[] => {
   const store = Store.create(jsonSchema);
-  const context = Context.create(entryPoint, store);
+  const context = Context.create(entryPoint, store, isOnlyLocalReference);
   Object.entries(jsonSchema.definitions || {}).forEach(([name, schema]) => {
     if (typeof schema === "boolean") {
       return;

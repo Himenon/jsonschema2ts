@@ -17,25 +17,26 @@ export interface ResolveReferencePath {
 export interface Context {
   setReferenceHandler: (currentPoint: string, reference: Reference.Type<Types.JSONSchema | Types.JSONSchemaDefinition>) => void;
   resolveReferencePath: (currentPoint: string, referencePath: string) => ResolveReferencePath;
+  isOnlyLocalReference: boolean;
 }
 
 export type Convert = (
   entryPoint: string,
   currentPoint: string,
-
   schema: Types.JSONSchema | Types.Reference | Types.JSONSchemaDefinition,
   setReference: Context,
+  isOnlyLocalReference: boolean,
 ) => ts.TypeNode;
 
 export const generateMultiTypeNode = (
   entryPoint: string,
   currentPoint: string,
   schemas: Types.JSONSchema[],
-  setReference: Context,
+  context: Context,
   convert: Convert,
   multiType: "oneOf" | "allOf" | "anyOf",
 ): ts.TypeNode => {
-  const typeNodes = schemas.map(schema => convert(entryPoint, currentPoint, schema, setReference));
+  const typeNodes = schemas.map(schema => convert(entryPoint, currentPoint, schema, context, context.isOnlyLocalReference));
   if (multiType === "oneOf") {
     return factory.UnionTypeNode.create({
       typeNodes,
@@ -78,7 +79,12 @@ export const convert: Convert = (
     });
   }
   if (Guard.isReference(schema)) {
-    const reference = Reference.generate<Types.JSONSchema | Types.JSONSchemaDefinition>(entryPoint, currentPoint, schema);
+    const reference = Reference.generate<Types.JSONSchema | Types.JSONSchemaDefinition>(
+      entryPoint,
+      currentPoint,
+      schema,
+      context.isOnlyLocalReference,
+    );
     if (reference.type === "local") {
       // Type Aliasを作成 (or すでにある場合は作成しない)
       context.setReferenceHandler(currentPoint, reference);
@@ -154,7 +160,7 @@ export const convert: Convert = (
       const typeNode = factory.TypeNode.create({
         type: schema.type,
         value: schema.items
-          ? convert(entryPoint, currentPoint, schema.items, context)
+          ? convert(entryPoint, currentPoint, schema.items, context, context.isOnlyLocalReference)
           : factory.TypeNode.create({
               type: "undefined",
             }),
@@ -173,7 +179,7 @@ export const convert: Convert = (
       const value: ts.PropertySignature[] = Object.entries(schema.properties || {}).map(([name, jsonSchema]) => {
         return factory.PropertySignature.create({
           name,
-          type: convert(entryPoint, currentPoint, jsonSchema, context),
+          type: convert(entryPoint, currentPoint, jsonSchema, context, context.isOnlyLocalReference),
           optional: !required.includes(name),
           comment: typeof jsonSchema !== "boolean" ? jsonSchema.description : undefined,
         });
@@ -181,7 +187,7 @@ export const convert: Convert = (
       if (schema.additionalProperties) {
         const additionalProperties = factory.IndexSignatureDeclaration.create({
           name: "key",
-          type: convert(entryPoint, currentPoint, schema.additionalProperties, context),
+          type: convert(entryPoint, currentPoint, schema.additionalProperties, context, context.isOnlyLocalReference),
         });
         return factory.TypeNode.create({
           type: schema.type,
@@ -202,9 +208,9 @@ export const convert: Convert = (
 export const convertAdditionalProperties = (
   entryPoint: string,
   currentPoint: string,
-
   schema: ObjectSchemaWithAdditionalProperties,
-  setReference: Context,
+  context: Context,
+  isOnlyLocalReference: boolean,
 ): ts.IndexSignatureDeclaration => {
   // // https://swagger.io/docs/specification/data-models/dictionaries/#free-form
   if (schema.additionalProperties === true) {
@@ -215,7 +221,7 @@ export const convertAdditionalProperties = (
   }
   const additionalProperties = factory.IndexSignatureDeclaration.create({
     name: "key",
-    type: convert(entryPoint, currentPoint, schema.additionalProperties, setReference),
+    type: convert(entryPoint, currentPoint, schema.additionalProperties, context, isOnlyLocalReference),
   });
   return additionalProperties;
 };

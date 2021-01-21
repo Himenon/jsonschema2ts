@@ -39,10 +39,14 @@ export const generateReferencePoint = (currentPoint: string, reference: Types.Re
   return referencePoint;
 };
 
-export const generate = <T>(entryPoint: string, currentPoint: string, reference: Types.Reference): Type<T> => {
+export const generate = <T>(entryPoint: string, currentPoint: string, reference: Types.Reference, isOnlyLocalReference: boolean): Type<T> => {
   const localReference = generateLocalReference(reference);
   if (localReference) {
     return localReference;
+  }
+
+  if (isOnlyLocalReference) {
+    throw new Error("Please use 'generateFromFile'");
   }
 
   if (reference.$ref.startsWith("http")) {
@@ -63,11 +67,7 @@ export const generate = <T>(entryPoint: string, currentPoint: string, reference:
   const data = fileSystem.loadJsonOrYaml(referencePoint);
 
   if (Guard.isReference(data)) {
-    return generate<T>(entryPoint, referencePoint, data);
-  }
-
-  if (!targetPath.startsWith("components")) {
-    throw new Error(`targetPath is not start "components":\n${targetPath}`);
+    return generate<T>(entryPoint, referencePoint, data, isOnlyLocalReference);
   }
 
   return {

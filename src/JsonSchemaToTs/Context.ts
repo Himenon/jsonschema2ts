@@ -70,7 +70,7 @@ const calculateReferencePath = (store: Store.Type, base: string, pathArray: stri
   };
 };
 
-export const create = (entryPoint: string, store: Store.Type): ToTypeNode.Context => {
+export const create = (entryPoint: string, store: Store.Type, isOnlyLocalReference: boolean): ToTypeNode.Context => {
   const resolveReferencePath: ToTypeNode.Context["resolveReferencePath"] = (currentPoint, referencePath) => {
     const { pathArray, base } = generatePath(entryPoint, currentPoint, referencePath);
     return calculateReferencePath(store, base, pathArray);
@@ -80,10 +80,17 @@ export const create = (entryPoint: string, store: Store.Type): ToTypeNode.Contex
       return;
     }
     if (reference.type === "remote") {
-      const typeNode = ToTypeNode.convert(entryPoint, reference.referencePoint, reference.data, {
-        setReferenceHandler,
-        resolveReferencePath,
-      });
+      const typeNode = ToTypeNode.convert(
+        entryPoint,
+        reference.referencePoint,
+        reference.data,
+        {
+          setReferenceHandler,
+          resolveReferencePath,
+          isOnlyLocalReference,
+        },
+        isOnlyLocalReference,
+      );
       if (ts.isTypeLiteralNode(typeNode)) {
         store.addStatement(reference.path, {
           kind: "interface",
@@ -98,10 +105,17 @@ export const create = (entryPoint: string, store: Store.Type): ToTypeNode.Contex
         const value = factory.TypeAliasDeclaration.create({
           export: true,
           name: reference.name,
-          type: ToTypeNode.convert(entryPoint, reference.referencePoint, reference.data, {
-            setReferenceHandler,
-            resolveReferencePath,
-          }),
+          type: ToTypeNode.convert(
+            entryPoint,
+            reference.referencePoint,
+            reference.data,
+            {
+              setReferenceHandler,
+              resolveReferencePath,
+              isOnlyLocalReference,
+            },
+            isOnlyLocalReference,
+          ),
         });
         store.addStatement(reference.path, {
           name: reference.name,
@@ -127,5 +141,5 @@ export const create = (entryPoint: string, store: Store.Type): ToTypeNode.Contex
       }
     }
   };
-  return { setReferenceHandler: setReferenceHandler, resolveReferencePath: resolveReferencePath };
+  return { setReferenceHandler: setReferenceHandler, resolveReferencePath: resolveReferencePath, isOnlyLocalReference };
 };

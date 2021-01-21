@@ -1,6 +1,6 @@
 {
   "name": "@himenon/jsonschema2ts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "TypeScript type definition generator from JSON Schema.",
   "keywords": [

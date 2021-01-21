@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="0.1.1"></a>
+## 0.1.1 (2021-01-21)
+
+
+### Bug Fixes
+
+* docs link ([#2](https://github.com/Himenon/jsonschema2ts/issues/2)) ([882be3d](https://github.com/Himenon/jsonschema2ts/commit/882be3d))
+
+
+
+
+
 <a name="0.1.0"></a>
 # 0.1.0 (2021-01-21)
 

@@ -1,20 +1,21 @@
 {
-  "name": "@himenon/node-lib-template",
-  "version": "0.0.10",
+  "name": "@himenon/jsonschema2ts",
+  "version": "0.0.0",
   "private": true,
-  "description": "node library template",
+  "description": "Output TypeScript type definition from jsonschema.",
   "keywords": [
-    "template",
-    "proxy directory",
-    "typescript"
+    "typescript",
+    "codegen",
+    "jsonschema",
+    "jsonschema2ts"
   ],
-  "homepage": "https://github.com/Himenon/node-lib-template#readme",
+  "homepage": "https://github.com/Himenon/jsonschema2ts#readme",
   "bugs": {
-    "url": "https://github.com/Himenon/node-lib-template/issues"
+    "url": "https://github.com/Himenon/jsonschema2ts/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Himenon/node-lib-template.git"
+    "url": "git@github.com:Himenon/jsonschema2ts.git"
   },
   "license": "MIT",
   "author": {
@@ -41,10 +42,13 @@
     "lerna:version:up": "lerna version --yes",
     "release:github:registry": "yarn publish --registry https://npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}",
     "release:npm:registry": "yarn publish",
-    "test": "run-s test:depcruise test:jest",
+    "test": "run-s test:depcruise test:code:gen test:snapshot",
+    "test:code:gen": "yarn ts ./test/gen.ts",
     "test:depcruise": "depcruise --validate .dependency-cruiser.js src",
     "test:jest": "jest -c ./jest.config.js",
-    "ts": "ts-node -P tsconfig.build.json"
+    "test:snapshot": "jest -c ./jest.snapshot.config.js",
+    "ts": "ts-node -P tsconfig.build.json",
+    "update:snapshot": "yarn test:snapshot --updateSnapshot"
   },
   "husky": {
     "hooks": {
@@ -61,10 +65,17 @@
     "kind-of": "6.0.3",
     "node-fetch": "2.6.1"
   },
+  "dependencies": {
+    "@himenon/path-oriented-data-structure": "^0.1.1",
+    "@types/json-schema": "^7.0.7",
+    "dot-prop": "6.0.1",
+    "js-yaml": "4.0.0"
+  },
   "devDependencies": {
     "@commitlint/cli": "11.0.0",
     "@commitlint/config-conventional": "11.0.0",
     "@types/jest": "26.0.20",
+    "@types/js-yaml": "^4.0.0",
     "@types/node": "14.14.21",
     "@types/rimraf": "3.0.0",
     "@typescript-eslint/eslint-plugin": "4.14.0",

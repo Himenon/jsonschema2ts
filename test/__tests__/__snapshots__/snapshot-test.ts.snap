@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Generate Code Snapshot Test OnlyLocalRef.ts 1`] = `
+"export type LocalReferenceString = string;
+export type StringType = string;
+export type StringHasEnumType = \\"a\\" | \\"A\\" | \\"b\\" | \\"B\\" | \\"あ\\" | \\"ア\\" | \\"い\\" | \\"イ\\" | \\"漢\\" | \\"字\\";
+export type NumberType = number;
+export type BooleanType = boolean;
+export type ArrayType = string[];
+export type OneOfType = string | number | boolean;
+export type AllOfType = string & number & boolean;
+export interface ObjectType {
+    stringType: string;
+    numberType?: number;
+    booleanType: boolean;
+    arrayType?: string[];
+}
+export type RefToDefinitionString = LocalReferenceString;
+export type RefToPropertyString = StringType;
+"
+`;
+
+exports[`Generate Code Snapshot Test RemoteRef.ts 1`] = `
+"export interface Book {
+    title?: string;
+}
+export type Books = Book[];
+export namespace Params {
+    export type B = string;
+    export interface A {
+        B?: B;
+    }
+}
+export type A = Params.A;
+"
+`;

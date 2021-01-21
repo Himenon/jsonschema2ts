@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "Book": {
+      "$ref": "./Book.json"
+    },
+    "Books": {
+      "type": "array",
+      "items": {
+        "$ref": "#/properties/Book"
+      }
+    },
+    "A": {
+      "$ref": "./Params/A.json"
+    }
+  }
+}

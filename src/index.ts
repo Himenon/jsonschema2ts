@@ -1,9 +1,12 @@
-export const hello = (name: string): string => {
-  const params = {
-    hoge: 1,
-    fuga: 2,
-  };
-  return `Hello ${name} ${JSON.stringify(params)}`;
-};
+import * as JsonSchema2TypeDeclaration from "./JsonSchema2TypeDeclaration";
+import type * as Types from "./types";
+import * as TsGenerator from "./TsGenerator";
 
-console.log(hello("Your name"));
+export { Types, JsonSchema2TypeDeclaration };
+
+export const generateFromJsonSchema = (jsonSchema: Types.JSONSchema): string => {
+  const createFunction: TsGenerator.CreateFunction = () => {
+    return JsonSchema2TypeDeclaration.generate(jsonSchema);
+  };
+  return TsGenerator.generate(createFunction);
+};

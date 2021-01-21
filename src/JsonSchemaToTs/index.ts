@@ -11,6 +11,7 @@ export const generate = (entryPoint: string, currentPoint: string, jsonSchema: T
     if (typeof schema === "boolean") {
       return;
     }
+    console.log({ name, schema });
     Schema.addSchema(entryPoint, currentPoint, store, name, name, schema, context);
   });
   return store.getRootStatements();

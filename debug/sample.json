@@ -1,0 +1,20 @@
+{
+  "name": ".",
+  "children": {
+    "typeAlias:StringType": {
+      "name": "StringType"
+    },
+    "typeAlias:NumberType": {
+      "name": "NumberType"
+    },
+    "typeAlias:BooleanType": {
+      "name": "BooleanType"
+    },
+    "typeAlias:ArrayType": {
+      "name": "ArrayType"
+    },
+    "typeAlias:OneOfType": {
+      "name": "OneOfType"
+    }
+  }
+}

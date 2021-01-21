@@ -1,4 +1,4 @@
-import { relative } from "path";
+import * as fs from "fs";
 
 import { Tree } from "@himenon/path-oriented-data-structure";
 import Dot from "dot-prop";
@@ -21,14 +21,17 @@ export interface Type {
 
 interface State {
   additionalStatements: ts.Statement[];
-  rootStatementName: string[];
+  rootStructures: {
+    kind: Structure.NamespaceTree.Kind | Structure.InterfaceNode.Kind | Structure.TypeAliasNode.Kind;
+    name: string;
+  }[];
 }
 
 export const create = (rootJsonSchema: Types.JSONSchema): Type => {
   const { operator, getChildByPaths } = Structure.create();
   const state: State = {
     additionalStatements: [],
-    rootStatementName: [],
+    rootStructures: [],
   };
   const isAfterDefined = (referencePath: string) => {
     return !!Dot.get(rootJsonSchema, referencePath.replace(/\//g, "."));
@@ -62,13 +65,35 @@ export const create = (rootJsonSchema: Types.JSONSchema): Type => {
   };
 
   const getRootStatements = (): ts.Statement[] => {
-    const statements = state.rootStatementName.reduce<ts.Statement[]>((statements, componentName) => {
-      const treeOfNamespace = getChildByPaths(componentName, "namespace");
-      if (treeOfNamespace) {
-        return statements.concat(convertNamespace(treeOfNamespace));
+    const statements = state.rootStructures.reduce<ts.Statement[]>((statements, rootStructure) => {
+      const kind = rootStructure.kind;
+      switch (kind) {
+        case "namespace":
+          {
+            const result = getChildByPaths(rootStructure.name, kind);
+            result && statements.push(convertNamespace(result));
+          }
+          break;
+        case "typeAlias":
+          {
+            const result = getChildByPaths(rootStructure.name, kind);
+            result && statements.push(result.value);
+          }
+          break;
+        case "interface":
+          {
+            const result = getChildByPaths(rootStructure.name, kind);
+            result && statements.push(result.value);
+          }
+          break;
+        default:
+          break;
       }
       return statements;
     }, []);
+
+    fs.writeFileSync("debug/sample.json", JSON.stringify(operator.getHierarchy(), null, 2), { encoding: "utf-8" });
+
     return statements.concat(state.additionalStatements);
   };
 
@@ -77,13 +102,15 @@ export const create = (rootJsonSchema: Types.JSONSchema): Type => {
       const alreadyRegistered = types.some(type => !!operator.getChildByPaths(path, type));
       return alreadyRegistered;
     },
-    addStatement: (path: string, statement: Structure.ComponentParams): void => {
-      const targetPath = relative("components", path);
-      operator.set(targetPath, Structure.createInstance(statement));
+    addStatement: (path: string, params: Structure.ComponentParams): void => {
+      state.rootStructures.push({
+        kind: params.kind,
+        name: params.name,
+      });
+      operator.set(path, Structure.createInstance(params));
     },
     getStatement: <T extends Structure.DataStructure.Kind>(path: string, kind: T): Structure.DataStructure.GetChild<T> | undefined => {
-      const targetPath = relative("components", path);
-      return getChildByPaths(targetPath, kind);
+      return getChildByPaths(path, kind);
     },
     getRootStatements,
     addAdditionalStatement: (statements: ts.Statement[]) => {

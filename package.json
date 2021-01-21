@@ -42,10 +42,13 @@
     "lerna:version:up": "lerna version --yes",
     "release:github:registry": "yarn publish --registry https://npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}",
     "release:npm:registry": "yarn publish",
-    "test": "run-s test:depcruise test:jest",
+    "test": "run-s test:depcruise test:snapshot",
+    "test:code:gen": "yarn ts ./tests/gen.ts",
     "test:depcruise": "depcruise --validate .dependency-cruiser.js src",
     "test:jest": "jest -c ./jest.config.js",
-    "ts": "ts-node -P tsconfig.build.json"
+    "test:snapshot": "jest -c ./jest.snapshot.config.js",
+    "ts": "ts-node -P tsconfig.build.json",
+    "update:snapshot": "yarn test:snapshot --updateSnapshot"
   },
   "husky": {
     "hooks": {

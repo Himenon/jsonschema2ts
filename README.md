@@ -25,7 +25,7 @@ const code = generateFromJsonSchema("your/file/path.json"); // or yaml
 
 ### Only local reference
 
-[JSON Input](./tests/schema/only-local-ref-root.json)
+[JSON Input](./test/schema/only-local-ref-root.json)
 
 **Output**
 
@@ -50,7 +50,7 @@ export type RefToPropertyString = StringType;
 
 ### Use Remote reference
 
-[JSON Input](./tests/schema/remote-ref-root.json)
+[JSON Input](./test/schema/remote-ref-root.json)
 
 ```ts
 export interface Book {

@@ -2,7 +2,7 @@
   "name": "@himenon/jsonschema2ts",
   "version": "0.1.0",
   "private": true,
-  "description": "Output TypeScript type definition from jsonschema.",
+  "description": "TypeScript type definition generator from JSON Schema.",
   "keywords": [
     "typescript",
     "codegen",

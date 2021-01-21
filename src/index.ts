@@ -1,12 +1,12 @@
-import * as JsonSchema2TypeDeclaration from "./JsonSchema2TypeDeclaration";
+import * as JsonSchemaToTs from "./JsonSchemaToTs";
 import type * as Types from "./types";
 import * as TsGenerator from "./TsGenerator";
 
-export { Types, JsonSchema2TypeDeclaration };
+export { Types, JsonSchemaToTs };
 
 export const generateFromJsonSchema = (jsonSchema: Types.JSONSchema): string => {
   const createFunction: TsGenerator.CreateFunction = () => {
-    return JsonSchema2TypeDeclaration.generate(jsonSchema);
+    return JsonSchemaToTs.generate("", "", jsonSchema);
   };
   return TsGenerator.generate(createFunction);
 };

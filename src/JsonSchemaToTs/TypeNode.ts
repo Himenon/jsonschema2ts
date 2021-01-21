@@ -1,10 +1,10 @@
 import ts from "typescript";
 
-import * as Reference from "./Reference";
-import * as Guard from "./Guard";
-import type * as Types from "./types";
-import { ObjectSchemaWithAdditionalProperties } from "./types";
-import * as Factory from "./Factory";
+import * as Reference from "../Reference";
+import * as Guard from "../Guard";
+import type * as Types from "../types";
+import { ObjectSchemaWithAdditionalProperties } from "../types";
+import * as Factory from "../Factory";
 
 const factory = Factory.create();
 
@@ -84,15 +84,10 @@ export const convert: Convert = (
       context.setReferenceHandler(currentPoint, reference);
       return factory.TypeReferenceNode.create({ name: context.resolveReferencePath(currentPoint, reference.path).maybeResolvedName });
     }
-    // サポートしているディレクトリに対して存在する場合
-    if (reference.componentName) {
-      // Type AliasもしくはInterfaceを作成
-      context.setReferenceHandler(currentPoint, reference);
-      // Aliasを貼る
-      return factory.TypeReferenceNode.create({ name: context.resolveReferencePath(currentPoint, reference.path).name });
-    }
-    // サポートしていないディレクトリに存在する場合、直接Interface、もしくはTypeAliasを作成
-    return convert(entryPoint, reference.referencePoint, reference.data, context);
+    // Type AliasもしくはInterfaceを作成
+    context.setReferenceHandler(currentPoint, reference);
+    // Aliasを貼る
+    return factory.TypeReferenceNode.create({ name: context.resolveReferencePath(currentPoint, reference.path).name });
   }
 
   if (Guard.isOneOfSchema(schema)) {

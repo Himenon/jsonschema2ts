@@ -10,10 +10,10 @@ export type ArrayType = string[];
 export type OneOfType = string | number | boolean;
 export type AllOfType = string & number & boolean;
 export interface ObjectType {
-  stringType: string;
-  numberType?: number;
-  booleanType: boolean;
-  arrayType?: string[];
+    stringType: string;
+    numberType?: number;
+    booleanType: boolean;
+    arrayType?: string[];
 }
 export type RefToDefinitionString = LocalReferenceString;
 export type RefToPropertyString = StringType;
@@ -22,14 +22,14 @@ export type RefToPropertyString = StringType;
 
 exports[`Generate Code Snapshot Test RemoteRef.ts 1`] = `
 "export interface Book {
-  title?: string;
+    title?: string;
 }
 export type Books = Book[];
 export namespace Params {
-  export type B = string;
-  export interface A {
-    B?: B;
-  }
+    export type B = string;
+    export interface A {
+        B?: B;
+    }
 }
 export type A = Params.A;
 "

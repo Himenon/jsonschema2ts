@@ -10,8 +10,6 @@ import type * as TypeNode from "./TypeNode";
 
 const factory = Factory.create();
 
-const TARGET_SCHEMAS = ["properties", "definitions"];
-
 const appendSchema = (
   entryPoint: string,
   currentPoint: string,
@@ -23,12 +21,8 @@ const appendSchema = (
   const targetPoint = name;
   if (Guard.isReference(schema)) {
     const reference = Reference.generate<Types.JSONSchema>(entryPoint, currentPoint, schema, context.isOnlyLocalReference);
+    const { maybeResolvedName } = context.resolveReferencePath(currentPoint, reference.path);
     if (reference.type === "local") {
-      const { unresolvedPaths } = context.resolveReferencePath(currentPoint, reference.path);
-      const resolveName = (TARGET_SCHEMAS.includes(unresolvedPaths[0])
-        ? unresolvedPaths.slice(1, unresolvedPaths.length)
-        : unresolvedPaths
-      ).join(".");
       store.addStatement(targetPoint, {
         kind: "typeAlias",
         name: name,
@@ -36,12 +30,27 @@ const appendSchema = (
           export: true,
           name: name,
           type: factory.TypeReferenceNode.create({
-            name: resolveName,
+            name: maybeResolvedName,
           }),
         }),
       });
     } else {
-      reference.data.$ref;
+      Schema.addSchema(entryPoint, reference.referencePoint, store, reference.path, reference.name, reference.data, context);
+      if (store.hasStatement(targetPoint, ["interface", "typeAlias"])) {
+        return;
+      }
+      store.addStatement(targetPoint, {
+        kind: "typeAlias",
+        name,
+        value: factory.TypeAliasDeclaration.create({
+          export: true,
+          name: name,
+          comment: reference.data.description,
+          type: factory.TypeReferenceNode.create({
+            name: maybeResolvedName,
+          }),
+        }),
+      });
     }
   } else {
     Schema.addSchema(entryPoint, currentPoint, store, targetPoint, name, schema, context);

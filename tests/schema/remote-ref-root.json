@@ -3,6 +3,15 @@
   "properties": {
     "Book": {
       "$ref": "./Book.json"
+    },
+    "Books": {
+      "type": "array",
+      "items": {
+        "$ref": "#/properties/Book"
+      }
+    },
+    "A": {
+      "$ref": "./Params/A.json"
     }
   }
 }

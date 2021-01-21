@@ -12,6 +12,7 @@ module.exports = {
   },
   plugins: ["@typescript-eslint"],
   rules: {
+    "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/ban-types": "warn",
   },
 };

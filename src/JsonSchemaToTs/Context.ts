@@ -13,6 +13,8 @@ export interface ReferencePathSet {
 
 const factory = Factory.create();
 
+const TARGET_SCHEMAS = ["properties", "definitions"];
+
 const generatePath = (entryPoint: string, currentPoint: string, referencePath: string): ReferencePathSet => {
   const ext = Path.extname(currentPoint); // .yml
   const from = Path.relative(Path.dirname(entryPoint), currentPoint).replace(ext, ""); // components/schemas/A/B
@@ -63,9 +65,15 @@ const calculateReferencePath = (store: Store.Type, base: string, pathArray: stri
     }
     return current;
   }, base);
+  let maybeResolvedName: string;
+  if (TARGET_SCHEMAS.includes(unresolvedPaths[0])) {
+    maybeResolvedName = names.concat(unresolvedPaths.slice(1, unresolvedPaths.length)).join(".");
+  } else {
+    maybeResolvedName = names.concat(unresolvedPaths).join(".");
+  }
   return {
     name: names.join("."),
-    maybeResolvedName: names.concat(unresolvedPaths).join("."),
+    maybeResolvedName,
     unresolvedPaths,
   };
 };

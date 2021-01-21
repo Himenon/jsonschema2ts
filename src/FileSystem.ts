@@ -17,7 +17,11 @@ const create = (): Type => {
     const data = fs.readFileSync(filename, { encoding: "utf-8" });
     switch (ext) {
       case ".json":
-        return JSON.parse(data);
+        try {
+          return JSON.parse(data);
+        } catch (error) {
+          throw new Error(`Error in ${filename}`);
+        }
       case ".yml":
       case ".yaml":
         return yaml.load(data);

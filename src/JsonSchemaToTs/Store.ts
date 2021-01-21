@@ -21,17 +21,12 @@ export interface Type {
 
 interface State {
   additionalStatements: ts.Statement[];
-  rootStructures: {
-    kind: Structure.NamespaceTree.Kind | Structure.InterfaceNode.Kind | Structure.TypeAliasNode.Kind;
-    name: string;
-  }[];
 }
 
 export const create = (rootJsonSchema: Types.JSONSchema): Type => {
   const { operator, getChildByPaths } = Structure.create();
   const state: State = {
     additionalStatements: [],
-    rootStructures: [],
   };
   const isAfterDefined = (referencePath: string) => {
     return !!Dot.get(rootJsonSchema, referencePath.replace(/\//g, "."));
@@ -65,29 +60,19 @@ export const create = (rootJsonSchema: Types.JSONSchema): Type => {
   };
 
   const getRootStatements = (): ts.Statement[] => {
-    const statements = state.rootStructures.reduce<ts.Statement[]>((statements, rootStructure) => {
-      const kind = rootStructure.kind;
-      switch (kind) {
-        case "namespace":
-          {
-            const result = getChildByPaths(rootStructure.name, kind);
-            result && statements.push(convertNamespace(result));
-          }
-          break;
-        case "typeAlias":
-          {
-            const result = getChildByPaths(rootStructure.name, kind);
-            result && statements.push(result.value);
-          }
-          break;
-        case "interface":
-          {
-            const result = getChildByPaths(rootStructure.name, kind);
-            result && statements.push(result.value);
-          }
-          break;
-        default:
-          break;
+    const rootChildren = Object.values(operator.getHierarchy().children || {});
+    const statements = rootChildren.reduce<ts.Statement[]>((statements, child) => {
+      const result1 = getChildByPaths(child.name, "namespace");
+      if (result1) {
+        statements.push(convertNamespace(result1));
+      }
+      const result2 = getChildByPaths(child.name, "interface");
+      if (result2) {
+        statements.push(result2.value);
+      }
+      const result3 = getChildByPaths(child.name, "typeAlias");
+      if (result3) {
+        statements.push(result3.value);
       }
       return statements;
     }, []);
@@ -101,10 +86,6 @@ export const create = (rootJsonSchema: Types.JSONSchema): Type => {
       return alreadyRegistered;
     },
     addStatement: (path: string, params: Structure.ComponentParams): void => {
-      state.rootStructures.push({
-        kind: params.kind,
-        name: params.name,
-      });
       operator.set(path, Structure.createInstance(params));
     },
     getStatement: <T extends Structure.DataStructure.Kind>(path: string, kind: T): Structure.DataStructure.GetChild<T> | undefined => {
